@@ -3,44 +3,170 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NES.CSS Components</title>
-  <link href="https://unpkg.com/nes.css/css/nes.min.css" rel="stylesheet" />
+  <title>Dungeon Crawler Game</title>
+  <link href="https://unpkg.com/nes.css@2.3.0/css/nes.min.css" rel="stylesheet" />
   <link href="styles.css" rel="stylesheet" />
-
 </head>
 <body>
-
-    <section class="message -left">
-        <div class="nes-balloon from-left">
-            <p>Greetings, traveler!</p>
-        </div>
-    </section>
-
-    <section class="message -right">
-        <div class="nes-balloon from-right">
-            <p>Hello, stranger!</p>
-        </div>
-    </section>
-
-    <section class="message -left">
-        <div class="nes-balloon from-left">
-            <p>What is your name?</p>
-        </div>
-    </section>
-
-    <section class="message -right">
-        <div class="nes-balloon from-right">
-            <label for="name_field">My name is</label>
-            <input type="text" id="name_field" class="nes-input" />
-            <button type="button" class="nes-btn">Nice to meet you</button>
-        </div>
-    </section>
-
-  <div class="nes-field">
-    <label for="name_field">My name is</label>
-    <input type="text" id="name_field" class="nes-input" />
-    <button type="button" class="nes-btn">Nice to meet you</button>
+  <div class="bodyLeft">
+    <div class="dialog-container nes-container" id="dialogContainer">
+    </div>
+    <div class="options-container nes-container" id="optionsContainer">
+    </div>
+  </div>
+  <div class="bodyRight">
+    <div class="nes-container with-title" id="inventoryContainer">
+      <p class="title">Inventory</p> 
+    </div>
+    <div class="nes-container with-title">
+      <p class="title">Health</p>
+      <div class="health-icons">
+        <p class="heart-icon nes-icon is-large heart"></p>
+        <p class="heart-icon nes-icon is-large heart"></p>
+        <p class="heart-icon nes-icon is-large heart"></p>
+        <i class="nes-icon is-large is-half heart"></i>
+        <i class="nes-icon is-large is-transparent heart"></i>
+      </div>   
+    </div>
+    <i class="nes-octocat animate"></i>
+    <a style="align-self: flex-end; justify-self: bottom;" href="https://github.com/ragnargulin/Simple-game" target="_blank" class="nes-badge">
+      <span class="is-dark">Github</span>
+    </a>
   </div>
 
+  <div id="doorModal" class="nes-dialog is-rounded is-dark" style="display: none; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);">
+      <h2 class="title">You've collected five items!</h2>
+      <p>You are now ready to open the door and face the next challenge.</p>
+        <button class="nes-btn is-primary" onclick="openDoor()">Open Door</button>
+  </div>
+
+  <dialog class="nes-dialog" id="doorModal">
+    <form method="dialog">
+      <p class="title">Dialog</p>
+      <p>Alert: this is a dialog.</p>
+      <menu class="dialog-menu">
+        <button class="nes-btn">Cancel</button>
+        <button class="nes-btn is-primary">Confirm</button>
+      </menu>
+    </form>
+  </dialog>
+
+  
+  
+
+  <script src="typeWriter.js"></script>
+  <script>
+    const inventory = [];
+    let items = [
+      { id: 1, name: "🍌", damage: 1, message: "I was going to eat that, but I guess you can have it." },
+      { id: 2, name: "🔫", damage: 5, message: "Squirt, squirt" },
+      { id: 3, name: "🦄", damage: 0, message: "Is that thing even real?" },
+      { id: 4, name: "🛹", damage: 0, message: "Wanna see me do a trick?" },
+      { id: 5, name: "💣", damage: 0, message: "That could come in handy" },
+    ];
+
+    const dialogues = [
+      { text: "Greetings, traveller!", options: [{ text: "Who are you?", next: 1 }, { text: "Where am I?", next: 2 }] },
+      { text: "I can't remember. I've been here for a very long time.", options: [{ text: "Where am I?", next: 2 }, { text: "How do I get out of here?", next: 3 }] },
+      { text: "You are locked in this strange room.", options: [{ text: "Who are you?", next: 1 }, { text: "How do I get out of here?", next: 3 }] },
+      { text: "Behind these doors are enemies. Pick five items to help you in your battle:", options: [] }
+    ];
+
+    // Initialize item options for dialogue
+    function populateItemOptions() {
+      dialogues[3].options = items.map(item => ({
+        text: item.name,
+        next: item,
+        item
+      }));
+    }
+
+    async function playerResponse(option) {
+      await addDialogueBubble(option.text, false);
+
+      if (option.item) {
+        inventory.push(option.item);
+        await addDialogueBubble(option.item.message, true);
+
+        items = items.filter(item => item.id !== option.item.id);
+        updateInventoryDisplay();
+        populateItemOptions();
+
+        if (inventory.length === 5) {
+    showDoorModal();
+  } else {
+    showOptions(dialogues[3].options);
+  }
+      } else if (option.next !== null) {
+        setTimeout(() => selectOption(option.next), 600);
+      } else {
+        document.getElementById("optionsContainer").innerHTML = "";
+      }
+    }
+
+    function showDoorModal() {
+  const doorModal = document.getElementById("doorModal");
+  doorModal.style.display = "block";
+}
+
+function openDoor() {
+  alert("You opened the door! The adventure continues...");
+  document.getElementById("doorModal").style.display = "none";
+}
+
+    function addDialogueBubble(text, isLeft) {
+      const dialogContainer = document.getElementById("dialogContainer");
+      const message = document.createElement("section");
+      message.classList.add("message", isLeft ? "-left" : "-right");
+
+      const balloon = document.createElement("div");
+      balloon.classList.add("nes-balloon", isLeft ? "from-left" : "from-right");
+      const p = document.createElement("p");
+      balloon.appendChild(p);
+      message.appendChild(balloon);
+      dialogContainer.prepend(message);
+      dialogContainer.scrollTop = dialogContainer.scrollHeight;
+
+      return new Promise((resolve) => typeWriterEffect(text, p, resolve));
+    }
+
+   
+
+    function showOptions(options) {
+      const optionsContainer = document.getElementById("optionsContainer");
+      optionsContainer.innerHTML = "";
+
+      options.forEach(option => {
+        const button = document.createElement("button");
+        button.classList.add("nes-btn");
+        button.textContent = option.text;
+        button.onclick = () => playerResponse(option);
+        optionsContainer.appendChild(button);
+      });
+    }
+
+    async function selectOption(nextIndex) {
+      const dialogue = dialogues[nextIndex];
+      await addDialogueBubble(dialogue.text, true);
+      showOptions(dialogue.options);
+    }
+
+    function updateInventoryDisplay() {
+      const inventoryContainer = document.getElementById("inventoryContainer");
+      inventoryContainer.innerHTML = "<p class='title'>Inventory</p>";
+      inventory.forEach(item => {
+        const itemDiv = document.createElement("div");
+        itemDiv.textContent = item.name;
+        itemDiv.className = "item-icon nes-icon is-large nes-pointer";
+        inventoryContainer.appendChild(itemDiv);
+      });
+    }
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      populateItemOptions();
+      await addDialogueBubble(dialogues[0].text, true);
+      showOptions(dialogues[0].options);
+    });
+  </script>
 </body>
 </html>

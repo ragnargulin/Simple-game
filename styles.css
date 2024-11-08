@@ -1,14 +1,87 @@
 @import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
 
-body {
-  background: rgb(255, 255, 255);
+::-webkit-scrollbar {
+  display: none;
 }
 
+/* General layout */
+body, html {
+  margin: 0;
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+}
 
+.bodyLeft {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 70vw;
+  padding: 1em;
+  box-sizing: border-box;
+}
 
-body {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+.bodyRight {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 30vw;
+  padding: 1em;
+  gap: 1em;
+  height: 100vh;
+  box-sizing: border-box;
+  border-left: 10px solid rgba(0, 0, 0, 0.176);
+}
+
+.nes-badge {
+    position: absolute;
+    bottom: 1em;
+    right: 1em;
+}
+
+.dialog-container {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column-reverse;
+  overflow-y: auto;
+  scrollbar-width: none;
+  padding: 1em;
+}
+
+/* Options container at the bottom */
+.options-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1em;
+  height: 120px;
+  padding: 1em;
+  box-sizing: border-box;
+}
+
+/* Style for messages */
+.message.-left {
+  align-self: flex-start;
+}
+
+.message.-right {
+  align-self: flex-end;
+}
+
+/* Inventory item styling */
+.item-icon {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+/* Typewriter effect for dialogue text */
+.typewriter p {
+  display: inline-block;
+  overflow: hidden;
+  animation: typing 3s steps(30, end);
+}
+
+@keyframes typing {
+  from { width: 0; }
+  to { width: 100%; }
 }
