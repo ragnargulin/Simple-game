@@ -11,6 +11,11 @@
 
 <body>
     <div class="bodyLeft">
+        <div>
+            <img style="width: 100%;" id="npcImage" alt="Image of npc">
+        </div>
+    </div>
+    <div class="bodyMid">
         <div class="dialog-container nes-container" id="dialogContainer">
         </div>
         <div class="options-container nes-container" id="optionsContainer">
@@ -30,6 +35,7 @@
             target="_blank" class="nes-badge">
             <span class="is-dark">Github</span>
         </a>
+        <button class="nes-btn is-primary" onclick="openDoor()">Open Door</button>
     </div>
 
     <div id="doorModal" class="nes-dialog is-rounded is-dark"
@@ -38,171 +44,27 @@
         <p>You are now ready to open the door and face the next challenge.</p>
         <button class="nes-btn is-primary" onclick="openDoor()">Open Door</button>
     </div>
-
-
-
-
+    <div id="fadeScreen"></div>
 
     <script src="typeWriter.js"></script>
+    <script src="inventory.js"></script>
+    <script src="dialogs.js"></script>
+    <script src="doorStuff.js"></script>
+
     <script>
         let inventory = [];
-
-        let health = 100; 
-
-        let items = [
-    { id: 1, name: "🍌", damage: 1, message: "I was going to eat that, but I guess you can have it." },
-    { id: 2, name: "🔫", damage: 5, message: "Squirt, squirt" },
-    { id: 3, name: "🦄", damage: 80, message: "Is that thing even real?" },
-    { id: 4, name: "🛹", damage: 10, message: "Wanna see me do a trick?" },
-    { id: 5, name: "💣", damage: 20, message: "That could come in handy" },
-    { id: 6, name: "🍕", damage: 3, message: "Hot and cheesy, just like your battle strategy." },
-    { id: 7, name: "🥇", damage: 15, message: "You're a winner with this one!" },
-    { id: 8, name: "🪓", damage: 25, message: "For when you need to chop through obstacles." },
-    { id: 9, name: "🌮", damage: 2, message: "It’s not just food; it’s fuel!" },
-    { id: 10, name: "⚡", damage: 50, message: "Electrifying power ready to zap your foes!" },
-    { id: 11, name: "🧸", damage: 0, message: "Cuddle up, but beware the enemies who underestimate it." },
-    { id: 12, name: "🧪", damage: 30, message: "Potion of mysterious power, use wisely." },
-    { id: 13, name: "🦸‍♂️", damage: 40, message: "Heroic strength in a bottle!" },
-    { id: 14, name: "🍒", damage: 4, message: "Sweet and sour, just like your choices." },
-    { id: 15, name: "🏹", damage: 35, message: "Take aim, and let the arrows fly!" },
-    { id: 16, name: "🐉", damage: 100, message: "It’s a dragon, need I say more?" },
-    { id: 17, name: "🦴", damage: 8, message: "For when you want to play fetch with danger." },
-    { id: 18, name: "🛡️", damage: 0, message: "A shield! Protect yourself from danger." },
-    { id: 19, name: "⚔️", damage: 60, message: "Sharp, deadly, and ready to slash!" },
-    { id: 20, name: "💀", damage: 12, message: "Beware the skull, it whispers secrets of the undead." },
-];
-
-
-        const dialogues = [
-            { text: "Greetings, traveller!", options: [{ text: "Who are you?", next: 1 }, { text: "Where am I?", next: 2 }] },
-            { text: "I can't remember. I've been here for a very long time.", options: [{ text: "Where am I?", next: 2 }, { text: "How do I get out of here?", next: 3 }] },
-            { text: "You are locked in this strange room.", options: [{ text: "Who are you?", next: 1 }, { text: "How do I get out of here?", next: 3 }] },
-            { text: "Behind these doors are enemies. Pick five items to help you in your battle:", options: [] }
-        ];
-
-        //INVENTORY STUFF
-        function updateInventoryDisplay() {
-            const inventoryContainer = document.getElementById("inventoryContainer");
-            inventoryContainer.innerHTML = "<p class='title'>Inventory</p>";
-            inventory.forEach(item => {
-                const itemDiv = document.createElement("div");
-                itemDiv.textContent = item.name;
-                itemDiv.className = "item-icon nes-icon is-large nes-pointer";
-                inventoryContainer.appendChild(itemDiv);
-            });
-        }
-
-        //HEALTH STUFF
-        function updateHealthIcons(health) {
-            const healthContainer = document.querySelector('.health-icons');
-            healthContainer.innerHTML = ''; // Clear previous icons
-
-            // Calculate the number of hearts based on the health
-            let fullHearts = Math.floor(health / 20);
-            let hasHalfHeart = health % 20 >= 10;
-
-            // Add full hearts
-            for (let i = 0; i < fullHearts; i++) {
-                healthContainer.innerHTML += '<i class="nes-icon is-medium heart"></i>';
-            }
-
-            // Add half heart if needed
-            if (hasHalfHeart) {
-                healthContainer.innerHTML += '<i class="nes-icon is-medium is-half heart"></i>';
-            }
-
-            // Add empty hearts to make up a total of 5 hearts
-            const emptyHearts = 5 - fullHearts - (hasHalfHeart ? 1 : 0);
-            for (let i = 0; i < emptyHearts; i++) {
-                healthContainer.innerHTML += '<i class="nes-icon is-medium is-transparent heart"></i>';
-            }
-        }
-        // Example usage
-        updateHealthIcons(health);
-
-
-        //DIALOGUE STUFF
-
-        // Initialize item options for dialogue
-        function populateItemOptions() {
-            dialogues[3].options = items.map(item => ({
-                text: item.name,
-                next: item,
-                item
-            }));
-        }
-
-        async function playerResponse(option) {
-            await addDialogueBubble(option.text, false);
-
-            if (option.item) {
-                inventory.push(option.item);
-                await addDialogueBubble(option.item.message, true);
-
-                items = items.filter(item => item.id !== option.item.id);
-                updateInventoryDisplay();
-                populateItemOptions();
-
-                if (inventory.length === 5) {
-                    showDoorModal();
-                } else {
-                    showOptions(dialogues[3].options);
-                }
-            } else if (option.next !== null) {
-                setTimeout(() => selectOption(option.next), 600);
-            } else {
-                document.getElementById("optionsContainer").innerHTML = "";
-            }
-        }
-
-        function addDialogueBubble(text, isLeft) {
-            const dialogContainer = document.getElementById("dialogContainer");
-            const message = document.createElement("section");
-            message.classList.add("message", isLeft ? "-left" : "-right");
-
-            const balloon = document.createElement("div");
-            balloon.classList.add("nes-balloon", isLeft ? "from-left" : "from-right");
-            const p = document.createElement("p");
-            balloon.appendChild(p);
-            message.appendChild(balloon);
-            dialogContainer.prepend(message);
-            dialogContainer.scrollTop = dialogContainer.scrollHeight;
-
-            return new Promise((resolve) => typeWriterEffect(text, p, resolve));
-        }
-
-        function showOptions(options) {
-            const optionsContainer = document.getElementById("optionsContainer");
-            optionsContainer.innerHTML = "";
-
-            options.forEach(option => {
-                const button = document.createElement("button");
-                button.classList.add("nes-btn");
-                button.textContent = option.text;
-                button.onclick = () => playerResponse(option);
-                optionsContainer.appendChild(button);
-            });
-        }
-
-        async function selectOption(nextIndex) {
-            const dialogue = dialogues[nextIndex];
-            await addDialogueBubble(dialogue.text, true);
-            showOptions(dialogue.options);
-        }
-
-        // DOOR STUFF
-        function showDoorModal() {
-            const doorModal = document.getElementById("doorModal");
-            doorModal.style.display = "block";
-        }
-
-        function openDoor() {
-            alert("You opened the door! The adventure continues...");
-            document.getElementById("doorModal").style.display = "none";
-        }
+        let health = 100;
+        let enemyHealth = 100;
+        let npc = "assets/oldMan.jpg";
+        let currentDialogueIndex = 0;
+        let isInCombat = false;
+        document.getElementById("npcImage").src = npc;
 
         document.addEventListener("DOMContentLoaded", async () => {
             populateItemOptions();
+            populateFightOptions();
+            updateHealthIcons(health);
+            updateInventoryDisplay(inventory);
             addDialogueBubble(dialogues[0].text, true);
             showOptions(dialogues[0].options);
         });
