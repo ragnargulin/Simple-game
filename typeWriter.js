@@ -3,7 +3,6 @@ const talkSound = new Audio('assets/monsterTalk.mp3');
 function typeWriterEffect(text, element, callback) {
     element.innerHTML = "";
     let index = 0;
-    
     talkSound.play();
     
     function type() {

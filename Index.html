@@ -11,60 +11,81 @@
 
 <body>
     <div class="bodyLeft">
-        <div>
+            <div class="nes-container is-dark">
+                <p class="nes-pointer" onclick="saveGame()" >Save game</p>
+                <p class="nes-pointer" onclick="loadGame()">Load game</p>
+                <p class="nes-pointer" onclick="restartGame()">Start over</p>
+            </div>
+            <div style="display: none; height: 0px;" class="nes-container with-title health">
+                <p class="title">Enemy health</p>
+                <div class="enemy-health-icons"></div>
+            </div>
             <img style="width: 100%;" id="npcImage" alt="Image of npc">
-        </div>
     </div>
     <div class="bodyMid">
-        <div class="dialog-container nes-container" id="dialogContainer">
+        <div class="dialog-container" id="dialogContainer">
         </div>
-        <div class="options-container nes-container" id="optionsContainer">
+        <div class="options-container  is-rounded" id="optionsContainer">
         </div>
+
     </div>
+
     <div class="bodyRight">
+
         <div class="nes-container with-title" id="inventoryContainer">
             <p class="title">Inventory</p>
+            <p>Empty</p>
         </div>
         <div class="nes-container with-title health">
             <p class="title">Health</p>
-            <div class="health-icons">
-            </div>
+            <div class="player-health-icons"></div>
         </div>
-        <i class="nes-octocat animate"></i>
-        <a style="align-self: flex-end; justify-self: bottom;" href="https://github.com/ragnargulin/Simple-game"
-            target="_blank" class="nes-badge">
-            <span class="is-dark">Github</span>
-        </a>
-        <button class="nes-btn is-primary" onclick="openDoor()">Open Door</button>
+
+
+        <section class="icon-list">
+
+            <!-- github -->
+            <a href="https://github.com/ragnargulin/Simple-game" target="_blank"><i
+                    class="nes-icon github is-medium"></i></a>
+            <!-- linkedin -->
+            <a href="https://www.linkedin.com/in/ragnargulin/" target="_blank"><i
+                    class="nes-icon linkedin is-medium"></i></a>
+        </section>
     </div>
 
     <div id="doorModal" class="nes-dialog is-rounded is-dark"
         style="display: none; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);">
         <h2 class="title">You've collected five items!</h2>
-        <p>You are now ready to open the door and face the next challenge.</p>
+        <p>You are now ready to open the door and face the monster.</p>
         <button class="nes-btn is-primary" onclick="openDoor()">Open Door</button>
     </div>
     <div id="fadeScreen"></div>
 
     <script src="typeWriter.js"></script>
     <script src="inventory.js"></script>
-    <script src="dialogs.js"></script>
+    <script src="dialogue.js"></script>
+    <script src="optionsContainer.js"></script>
     <script src="doorStuff.js"></script>
+    <script src="health.js"></script>
+    <script src="battle.js"></script>
+    <script src="settings.js"></script>
 
     <script>
         let inventory = [];
-        let health = 100;
-        let enemyHealth = 100;
-        let npc = "assets/oldMan.jpg";
+        let playerHealth = 80;
+        let enemyHealth = 50;
+        let npc = "assets/oldMan.png";
         let currentDialogueIndex = 0;
         let isInCombat = false;
+        let currentOptions = [];
+        
         document.getElementById("npcImage").src = npc;
 
         document.addEventListener("DOMContentLoaded", async () => {
             populateItemOptions();
             populateFightOptions();
-            updateHealthIcons(health);
-            updateInventoryDisplay(inventory);
+            updateHealthIcons(playerHealth, "player");
+            updateHealthIcons(enemyHealth, "enemy");
             addDialogueBubble(dialogues[0].text, true);
             showOptions(dialogues[0].options);
         });

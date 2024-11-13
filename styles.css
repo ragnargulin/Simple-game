@@ -11,17 +11,17 @@ body, html {
   flex-direction: row;
   height: 100vh;
   width: 100vw;
-  overflow: hidden;
-  
+  overflow: hidden;  
 }
 
 .bodyLeft {
-
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
   padding: 1em;
   width: 25%;
+  border-right: 5px solid black;
+
 }
 .bodyMid {
   display: flex;
@@ -29,6 +29,7 @@ body, html {
   flex-basis: 50%;
   padding: 1em;
   box-sizing: border-box;
+
 }
 
 .doorModal {
@@ -39,13 +40,15 @@ body, html {
 .bodyRight {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: top;
   padding: 1em;
   gap: 1em;
   width: 25%;
+  border-left: 5px solid black;
+
 }
 
-.nes-badge {
+.icon-list {
   position: absolute;
   bottom: 1em;
   right: 1em;
@@ -90,12 +93,6 @@ body, html {
 .typewriter p {
   display: inline-block;
   overflow: hidden;
-  animation: typing 3s steps(30, end);
-}
-
-@keyframes typing {
-  from { width: 0; }
-  to { width: 100%; }
 }
 
 #fadeScreen {
@@ -121,6 +118,7 @@ body, html {
     top: 0;
     width: 100%;
     height: 30vh;
+    border: none;
   }
 
   .bodyMid {
@@ -131,7 +129,7 @@ body, html {
     box-sizing: border-box;
   }
 
-  .nes-badge {
+  .icon-list {
     display: none; 
   }
 
@@ -159,7 +157,6 @@ body, html {
   .bodyLeft {
     display: none;
   }
-
 }
 
 .options-container {

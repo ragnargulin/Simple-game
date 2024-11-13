@@ -19,10 +19,10 @@ fadeScreen.style.transition = "opacity 2s";
 fadeScreen.style.opacity = 1; 
 
 setTimeout(() => {
+hideDoorModal();
 document.getElementById("dialogContainer").innerHTML = "";
 document.getElementById("optionsContainer").innerHTML = "";
 let npc = "assets/scaryMonster.jpg";
-hideDoorModal();
 document.getElementById("npcImage").src = npc;
 fadeScreen.style.opacity = 0; 
 addDialogueBubble(dialogues[4].text, true);
