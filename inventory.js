@@ -46,7 +46,7 @@ function updateInventoryDisplay() {
   inventory.forEach((item) => {
     const itemDiv = document.createElement("div");
     itemDiv.textContent = item.name;
-    itemDiv.className = "item-icon nes-icon is-large nes-pointer";
+    itemDiv.className = "item-icon nes-icon is-large";
     inventoryContainer.appendChild(itemDiv);
   });
 }

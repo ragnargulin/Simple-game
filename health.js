@@ -7,27 +7,37 @@
  */
 function updateHealthIcons(health, target) {
   const healthContainer = document.querySelector(`.${target}-health-icons`);
-  healthContainer.innerHTML = ""; 
+  healthContainer.innerHTML = "";  // Clear existing icons
   
-  // Calculate the number of hearts based on the health
-  let fullHearts = Math.floor(health / 20);
-  let hasHalfHeart = health % 20 >= 10;
+  // Calculate the number of hearts and half hearts
+  const fullHearts = Math.floor(health / 20);
+  const hasHalfHeart = health % 20 >= 10;
+  const emptyHearts = 5 - fullHearts - (hasHalfHeart ? 1 : 0);
+  
+  // Create an array of heart elements
+  const hearts = [];
 
   // Add full hearts
   for (let i = 0; i < fullHearts; i++) {
-    healthContainer.innerHTML += '<i class="nes-icon is-medium heart"></i>';
+    const heart = document.createElement('i');
+    heart.classList.add('nes-icon', 'is-medium', 'heart');
+    hearts.push(heart);
   }
 
   // Add half heart if needed
   if (hasHalfHeart) {
-    healthContainer.innerHTML +=
-      '<i class="nes-icon is-medium is-half heart"></i>';
+    const halfHeart = document.createElement('i');
+    halfHeart.classList.add('nes-icon', 'is-medium', 'is-half', 'heart');
+    hearts.push(halfHeart);
   }
 
-  // Add empty hearts to make up a total of 5 hearts
-  const emptyHearts = 5 - fullHearts - (hasHalfHeart ? 1 : 0);
+  // Add empty hearts to make up to 5
   for (let i = 0; i < emptyHearts; i++) {
-    healthContainer.innerHTML +=
-      '<i class="nes-icon is-medium is-transparent heart"></i>';
+    const emptyHeart = document.createElement('i');
+    emptyHeart.classList.add('nes-icon', 'is-medium', 'is-transparent', 'heart');
+    hearts.push(emptyHeart);
   }
+
+  // Append all the heart elements at once
+  healthContainer.append(...hearts);
 }
