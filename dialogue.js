@@ -1,3 +1,10 @@
+/**
+ * Adds a dialogue bubble to the dialog container with a typing effect.
+ * Positions the bubble on the left or right side based on the `isLeft` parameter.
+ * @param {string} text - The text to display in the dialogue bubble.
+ * @param {boolean} isLeft - If true, positions the bubble on the left; otherwise, on the right.
+ * @returns {Promise<void>} A promise that resolves when the typing effect completes.
+ */
 function addDialogueBubble(text, isLeft) {
   const dialogContainer = document.getElementById("dialogContainer");
   const message = document.createElement("section");
@@ -12,6 +19,11 @@ function addDialogueBubble(text, isLeft) {
   return new Promise((resolve) => typeWriterEffect(text, p, resolve));
 }
 
+/**
+ * Array of dialogue objects containing text and options for responses.
+ * Each object represents a step in the dialogue flow with options for next steps.
+ * @type {Array<{ text: string, options: Array<{ text: string, next: number }> }>}
+ */
 const dialogues = [
   {
     text: "Greetings, traveller!",
@@ -35,7 +47,7 @@ const dialogues = [
     ],
   },
   {
-    text: "Behind these doors are enemies. Pick five items to help you in your battle:",
+    text: "Behind these doors is a scary enemy. Pick five items to help you in your battle:",
     options: [],
   },
   {
@@ -46,7 +58,7 @@ const dialogues = [
     ],
   },
   {
-    text: "I haven't spared an adventurer in 29488 years. Your are no exception!",
+    text: "I haven't spared an adventurer in 29488 years. You are no exception!",
     options: [{ text: "Then I shall kill you!", next: 6 }],
   },
   { text: "Not if I kill you first!", options: [] },
