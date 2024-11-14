@@ -1,5 +1,4 @@
 # Simple-game
-Dungeon game using JS and NES.CSS
 
 [Play the game in your browser](https://dungeonmaster.netlify.app/)
 
@@ -11,6 +10,12 @@ A simple dungeon crawler game built using JavaScript and NES.CSS. The game allow
 - Multiple choices for the user to make
 - Inventory system to pick up and carry items
 - Save and load game progress using sessionStorage (can be changed to localStorage for more permanent saves)
+
+## To-Do
+- Fix issue with NPC image loading oldMan even when facing scaryMonster (only when loading game)
+- Fully implement battle dynamics
+- Sound file for dialogue is not running perfectly, sometimes it's silent until next message
+- Fully implement JSdocs. Currently at ~70%
 
 ## Requirements for G:
 - Information is presented to the user with text, images, sound, or videos.
